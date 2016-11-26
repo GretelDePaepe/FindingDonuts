@@ -119,3 +119,10 @@ for cat in Cats:
                 pass
         else:
             break
+
+# %% check and create summary record in csv file
+
+count = db.Seattle.find({'date': tc}).count()
+f = open('YelpCountPerDay.csv', 'a')
+f.write(tc + "," + str(count) + "\n")
+f.close()
