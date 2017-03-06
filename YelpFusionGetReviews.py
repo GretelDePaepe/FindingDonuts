@@ -31,8 +31,8 @@ print "Number of businesses", len(bus_sub)
 
 # %% Get 3 reviews from Yelp for each of these businesses and store in mongodb
 
-CLIENT_ID = "FIHZccQIklPfA_2_21QsIQ"
-CLIENT_SECRET = "D7SjXjDjUsTvpcM9Cguz8HUjjy9LveR53u5rvUgzwe6KkblT2M3uCCuof2yMU2N2"
+CLIENT_ID = "Put Your Own"
+CLIENT_SECRET = "Put Your Own"
 
 API_HOST = 'api.yelp.com'
 SEARCH_PATH = '/v3/businesses/search'

@@ -95,6 +95,7 @@ f = 'YelpCats.csv'
 o = open(f, 'r')
 f = o.read()
 Cats = f.split(',\n')
+f.close()
 
 # %% Set some variables
 
