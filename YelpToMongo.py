@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Sep 17 17:07:38 2016
-@author: Gretel_MacAir
+@author: GDP
 """
 
 # %% Import required libs

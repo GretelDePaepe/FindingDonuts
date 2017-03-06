@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Dec 24 12:53:29 2016
-
-@author: Gretel_MacAir
+@author: GDP
 """
 
 import requests

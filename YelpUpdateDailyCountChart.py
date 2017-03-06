@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Nov 25 17:44:52 2016
-
-@author: Gretel_MacAir
+@author: GDP
 """
 
 # %% import libs
