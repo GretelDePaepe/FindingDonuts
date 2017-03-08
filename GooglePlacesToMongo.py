@@ -2,86 +2,78 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 17 13:39:08 2017
-
-@author: Gretel_MacAir
+@author: GDP
 """
 
-# %% import libs
+# %% The libs
 
 import urllib
 import json
 from pymongo import MongoClient
 import datetime as dt
 
-# %% Define functions
+# %% The functions
 
 
-def get_coordinates(lat_min, lat_max, lon_min, lon_max):
+def create_coordinates_list(lat_min, lat_max, lon_min, lon_max):
     """
     Creates a list with all the coordinate pairs incrementing
     the min values by 0.01 until the max values are reached.
     """
-    all_coord = []
+    all_coordinates = []
     lat = lat_min - 0.01
     lon = lon_min - 0.01
-    for d_lat in range(int((lat_max - lat_min) * 100)):
+    for no_of_lats in range(int((lat_max - lat_min) * 100)):
         lat += 0.01
-        for d_lon in range(int((lon_max - lon_min) * 100)):
+        for no_of_lons in range(int((lon_max - lon_min) * 100)):
             lon += 0.01
-            all_coord.append((lat, lon))
-    return all_coord
+            all_coordinates.append((lat, lon))
+    return all_coordinates
 
 
-def google_place(lat, log, radius, types, key):
+def google_places(lat, lon, radius, types, key):
     """
     The Google Places API Web Service allows you to query for place
     information on a variety of categories, such as: establishments,
     prominent points of interest, geographic locations, and more.
     https://developers.google.com/places/web-service/search
     """
-    AUTH_KEY = key
-    LOCATION = str(lat) + "," + str(log)
-    RADIUS = radius
-    TYPES = types
-    MyUrl = ('https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-             '?location=%s'
-             '&radius=%s'
-             '&types=%s'
-             '&key=%s') % (LOCATION, RADIUS, TYPES, AUTH_KEY)
-    # print MyUrl
-    response = urllib.urlopen(MyUrl)
-    jsonRaw = response.read()
-    jsonData = json.loads(jsonRaw)
-    return jsonData
+    location = str(lat) + "," + str(lon)
+    my_url = ('https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+              '?location=%s'
+              '&radius=%s'
+              '&types=%s'
+              '&key=%s') % (location, radius, types, key)
+    response = urllib.urlopen(my_url)
+    json_raw = response.read()
+    json_data = json.loads(json_raw)
+    return json_data
 
 
-def google_place_next(pagetoken, key):
+def google_places_next(page_token, key):
     """
     The Google Places API web Service returns 20 results and if there are
     more a next_page token.  The max is 60 results, 20 at a time.  This
     function looks for the next page token and if it exist, gets the next
     20 results twice.
     """
-    AUTH_KEY = key
-    PAGE_TOKEN = pagetoken
-    MyUrl = ('https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-             '?pagetoken=%s'
-             '&key=%s') % (PAGE_TOKEN, AUTH_KEY)
-    # print MyUrl
-    response = urllib.urlopen(MyUrl)
-    jsonRaw = response.read()
-    jsonData = json.loads(jsonRaw)
-    return jsonData
+    my_url = ('https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+              '?pagetoken=%s'
+              '&key=%s') % (page_token, key)
+    response = urllib.urlopen(my_url)
+    json_raw = response.read()
+    json_data = json.loads(json_raw)
+    return json_data
 
 
 def get_cats(path):
     """
     Loads a list of categories we will search for, from a file
     """
-    f = path
-    o = open(f, 'r')
-    f = o.read()
-    cats = f.split(',\n')
+    file_path = path
+    file_open = open(file_path, 'r')
+    file_read = file_open.read()
+    cats = file_read.split(',\n')
     return cats
 
 
@@ -101,8 +93,8 @@ def store_in_mongo(db, collection, google_data, tc):
     Adds a date tag to the doc.
     """
     docs = google_data['results']
-    for i in range(len(docs)):
-        doc = docs[i]
+    for no_of_docs in range(len(docs)):
+        doc = docs[no_of_docs]
         print doc['name']
         doc['date'] = tc
         eval("db.%s.insert_one(doc)" % collection)
@@ -120,7 +112,7 @@ def create_daily_count(db, collection, tc, path):
     f.close()
     return count
 
-# %%
+# %% The program
 
 
 def main():
@@ -137,13 +129,13 @@ def main():
     tc = t.strftime('%m/%d/%Y')
 
     cats = get_cats('/home/ec2-user/pythonscripts/GoogleTypes.csv')
-    all_coord = get_coordinates(47.48, 47.75, -122.43, -122.20)
+    all_coord = create_coordinates_list(47.48, 47.75, -122.43, -122.20)
 
     for cat in cats:
         print cat
         for lat, lon in all_coord:
             print lat, lon
-            google_data = google_place(lat, lon, radius, cat, key)
+            google_data = google_places(lat, lon, radius, cat, key)
             store_in_mongo(db, collection, google_data, tc)
             for j in range(2):
                 try:
@@ -151,7 +143,7 @@ def main():
                 except:
                     pagetoken = "No more"
                 if pagetoken != "No more":
-                    google_data = google_place_next(pagetoken, key)
+                    google_data = google_places_next(pagetoken, key)
                     store_in_mongo(db, collection, google_data, tc)
 
     end = dt.datetime.now()
@@ -162,7 +154,7 @@ def main():
 
     print start, end
 
-# %%
+# %% Standard boilerplate to call the main() function
 
 if __name__ == "__main__":
     main()
