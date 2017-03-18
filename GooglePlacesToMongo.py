@@ -20,14 +20,16 @@ def create_coordinates_list(lat_min, lat_max, lon_min, lon_max):
     Creates a list with all the coordinate pairs incrementing
     the min values by 0.01 until the max values are reached.
     """
+    increment = 0.01
     all_coordinates = []
-    lat = lat_min - 0.01
-    lon = lon_min - 0.01
-    for no_of_lats in range(int((lat_max - lat_min) * 100)):
-        lat += 0.01
-        for no_of_lons in range(int((lon_max - lon_min) * 100)):
-            lon += 0.01
-            all_coordinates.append((lat, lon))
+    lat = lat_min - increment
+    lon = lon_min - increment
+    for no_of_lats in range(int((lat_max - lat_min) / increment)):
+        lat += increment
+        lon = lon_min - increment  # lon needs to be reset before 2nd loop!
+        for no_of_lons in range(int((lon_max - lon_min) / increment)):
+            lon += increment
+            all_coordinates.append((round(lat, 2), round(lon, 2)))
     return all_coordinates
 
 
