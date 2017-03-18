@@ -97,7 +97,6 @@ def store_in_mongo(db, collection, google_data, tc):
     docs = google_data['results']
     for no_of_docs in range(len(docs)):
         doc = docs[no_of_docs]
-        print doc['name']
         doc['date'] = tc
         eval("db.%s.insert_one(doc)" % collection)
 
@@ -134,9 +133,7 @@ def main():
     all_coord = create_coordinates_list(47.48, 47.75, -122.43, -122.20)
 
     for cat in cats:
-        print cat
         for lat, lon in all_coord:
-            print lat, lon
             google_data = google_places(lat, lon, radius, cat, key)
             store_in_mongo(db, collection, google_data, tc)
             for j in range(2):
