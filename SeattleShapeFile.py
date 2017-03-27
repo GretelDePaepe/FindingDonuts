@@ -16,7 +16,8 @@ import pandas as pd
 
 # %% Read shapefile
 
-path = [PUT YOUR OWN]
+path = "[PUT YOUR OWN]"
+path = "/Users/Gretel_MacAir/Documents/Donuts/ZillowNeighborhoods-WA/"
 shape_file = "ZillowNeighborhoods-WA/ZillowNeighborhoods-WA.shp"
 sf = shapefile.Reader(path + shape_file)
 
@@ -77,7 +78,7 @@ def create_coordinates_list(lat_min, lat_max, lon_min, lon_max):
         lon = lon_min - increment  # lon needs to be reset before 2nd loop!
         for no_of_lons in range(int((lon_max - lon_min) / increment)):
             lon += increment
-            all_coordinates.append((round(lat, 2), round(lon, 2)))
+            all_coordinates.append((round(lat, 3), round(lon, 3)))
     return all_coordinates
 
 all_coordinates = create_coordinates_list(47.48, 47.75, -122.45, -122.22)
