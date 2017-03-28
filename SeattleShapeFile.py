@@ -17,7 +17,6 @@ import pandas as pd
 # %% Read shapefile
 
 path = "[PUT YOUR OWN]"
-path = "/Users/Gretel_MacAir/Documents/Donuts/"
 shape_file = "ZillowNeighborhoods-WA/ZillowNeighborhoods-WA.shp"
 sf = shapefile.Reader(path + shape_file)
 

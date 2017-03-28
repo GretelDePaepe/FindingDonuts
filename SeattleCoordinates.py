@@ -15,7 +15,6 @@ import pickle
 # %% Read shapefile
 
 path = "[PUT YOUR OWN]"
-path = "/Users/Gretel_MacAir/Documents/Donuts/ZillowNeighborhoods-WA/"
 shape_file = "ZillowNeighborhoods-WA.shp"
 sf = shapefile.Reader(path + shape_file)
 
