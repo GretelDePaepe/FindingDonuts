@@ -17,7 +17,7 @@ import pandas as pd
 # %% Read shapefile
 
 path = "[PUT YOUR OWN]"
-path = "/Users/Gretel_MacAir/Documents/Donuts/ZillowNeighborhoods-WA/"
+path = "/Users/Gretel_MacAir/Documents/Donuts/"
 shape_file = "ZillowNeighborhoods-WA/ZillowNeighborhoods-WA.shp"
 sf = shapefile.Reader(path + shape_file)
 
@@ -26,10 +26,10 @@ sf = shapefile.Reader(path + shape_file)
 counter = 0
 seattle_areas = []
 for rec in sf.iterRecords():
-    counter += 1
     if rec[2] == 'Seattle':
         neighboorhood = rec[3]
         seattle_areas.append((counter, neighboorhood))
+    counter += 1
 
 # %% Show plot with Seattle shapes
 
