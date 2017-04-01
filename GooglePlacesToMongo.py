@@ -132,7 +132,6 @@ def main():
     start = dt.datetime.now()
     number_of_requests = 0
     max_number_of_requests = 140000  # max number of requests in 24 hours is 150,000
-    max_number_of_requests = 500
 
     path = '/home/ec2-user/pythonscripts/'
 
