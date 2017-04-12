@@ -141,7 +141,7 @@ def main():
     db = connect_mongo('FindingDonuts')
     collection = 'SeattleGoogle'
 
-    key = "AIzaSyCdVApz2Qw50B62TKOOCQkH1Y3dAJM7A5M"
+    key = "KEY IN YOUR OWN"
     radius = 100
 
     t = dt.datetime.now()
