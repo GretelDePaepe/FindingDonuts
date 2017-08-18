@@ -66,7 +66,7 @@ def connect_mongo(database):
 
 def get_bookmark(bookmark_pickle_file, path):
     """
-    Reads with lat lon coordite we need to proceed from based on where
+    Reads which lat and lon coordinate we need to proceed from based on where
     the script stopped last time it ran
     """
     bookmark = pickle.load(open(path + bookmark_pickle_file, "rb"))
@@ -75,7 +75,7 @@ def get_bookmark(bookmark_pickle_file, path):
 
 def store_bookmark(bookmark_pickle_file, path, bookmark):
     """
-    Pickes the lat lon coorindate pair we need to start from next
+    Pickles the lat lon coordinate pair we need to start from next
     time the script runs
     """
     pickle.dump(bookmark, open(path + bookmark_pickle_file, "wb"))
