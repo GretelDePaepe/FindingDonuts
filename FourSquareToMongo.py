@@ -37,6 +37,20 @@ def four_places(lat, lon, radius, category, limit, client_id, client_secret):
     return response
 
 
+def four_reviews(venue_id, client_id, client_secret):
+    """
+    The Foursquare API returns a list of tips (reviews) per venue.
+    https://developer.foursquare.com/docs/tips/search
+    venue_id: id of venue
+    client_id = Client_id linked to app.
+    client_secret = Client_secret linked to app.
+    """
+    client = foursquare.Foursquare(client_id=client_id,
+                                   client_secret=client_secret)
+    response = client.venues.tips(venue_id)
+    return response
+
+
 def store_four_in_mongo(db, collection, four_data, tc, hood):
     """
     Loops through the results returned by the FourSquare API
@@ -49,30 +63,59 @@ def store_four_in_mongo(db, collection, four_data, tc, hood):
     hood = neighborhood
     """
     docs = four_data['groups'][0]['items']
+    venues_list = []
     for no_of_docs in range(len(docs)):
         doc = docs[no_of_docs]
         doc['date'] = tc
         doc['hood'] = hood
-        place = doc['venue']['id']
-        con = "db.%s.find({'place_id': '%s', 'date': '%s'}).count()" % (collection, place, tc)
+        venue = doc['venue']['id']
+        venues_list.append(venue)
+        con = "db.%s.find({'venue_id': '%s', 'date': '%s'}).count()" % (collection, venue, tc)
         count = eval(con)
         if count == 0:
             eval("db.%s.insert_one(doc)" % collection)
+    return venues_list
 
+
+def store_four_reviews_in_mongo(db, collection, reviews, tc, venue_id):
+    """
+    Loops through the results returned by the details Google Places API
+    and adds each review to a mongo collection.
+    Adds a date tag to the doc.
+    db = mongo database connection
+    collection = name of the mongo collection
+    google_data = data returned from the Google Places API
+    tc = today's date
+    venue_id = a textual identifier that uniquely identifies a place,
+               returned from a Place Search.
+    """
+    number_of_reviews = len(reviews['tips']['items'])
+    for i in range(number_of_reviews):
+        review = reviews['tips']['items'][i]
+        review['date'] = tc
+        review['venue_id'] = venue_id
+        eval("db.%s.insert_one(review)" % collection)
 
 # %%
+
+
 def main():
     start = dt.datetime.now()
     number_of_requests = 0
-    max_number_of_requests = 90000  # max number of requests in 24 h is 100,000
+    """
+    After validating your account with Foursquare the max number of requests
+    is 100,000 in a 24 hour window.  This does not get rid of the 5,000
+    requests per hour though it seems.  Hence this script will be scheduled to
+    run every 2 hours (buffer).  I am setting the max to 4,000 since I like to
+    have some buffer in case I need to test something.
+    """
+    max_number_of_requests = 4000
     path = dl.get_path('FourSquare')
 
     bookmark_pickle_file = "bookmark_four.p"
     bookmark = dl.get_bookmark(bookmark_pickle_file, path)
-    dl.get_bookmark
 
     db = dl.connect_mongo('FindingDonuts')
-    collection = 'SeattleFour'
 
     client_id = dl.get_api_keys('FourAPIKey.p', path)[0]
     client_secret = dl.get_api_keys('FourAPIKey.p', path)[1]
@@ -91,13 +134,27 @@ def main():
 
     while number_of_requests < max_number_of_requests:
         hood, lat, lon = seattle_coordinates[bookmark]
-        # print "--", bookmark, hood, lat, lon, number_of_requests
         for one_type in types:
             four_data = four_places(lat, lon, radius,
                                     one_type, limit,
                                     client_id, client_secret)
-            store_four_in_mongo(db, collection, four_data, tc, hood)
+            venues = store_four_in_mongo(db,
+                                         'SeattleFour',
+                                         four_data,
+                                         tc,
+                                         hood)
             number_of_requests += 1
+            # In this case we get the reviews immediately for each venue
+            for venue in venues:
+                four_reviews_data = four_reviews(venue,
+                                                 client_id,
+                                                 client_secret)
+                store_four_reviews_in_mongo(db,
+                                            'SeattleFourReviews',
+                                            four_reviews_data,
+                                            tc,
+                                            venue)
+                number_of_requests += 1
         if bookmark < 27337:
             bookmark += 1
         else:
@@ -107,16 +164,17 @@ def main():
 
     dc_file = 'FourCountPerDay.csv'
     four_places_count = dl.create_daily_count(db,
-                                              collection,
+                                              'SeattleFour',
                                               tc,
                                               path + dc_file)
-
+    four_reviews_count = dl.create_daily_count(db,
+                                               'SeattleFourReviews',
+                                               tc,
+                                               path + dc_file)
     end = dt.datetime.now()
 
-    subject = "FourSquareToMongo"
-    count = four_places_count
-
-    dl.send_mail(subject, count, start, end)
+    dl.send_mail('FourSquareToMongo', four_places_count, start, end)
+    dl.send_mail('FourSquareReviewsToMongo', four_reviews_count, start, end)
 
 # %% Standard boilerplate to call the main() function
 
