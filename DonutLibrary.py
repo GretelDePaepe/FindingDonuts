@@ -65,11 +65,19 @@ def connect_mongo(database):
 
 
 def get_bookmark(bookmark_pickle_file, path):
+    """
+    Reads with lat lon coordite we need to proceed from based on where
+    the script stopped last time it ran
+    """
     bookmark = pickle.load(open(path + bookmark_pickle_file, "rb"))
     return bookmark
 
 
 def store_bookmark(bookmark_pickle_file, path, bookmark):
+    """
+    Pickes the lat lon coorindate pair we need to start from next
+    time the script runs
+    """
     pickle.dump(bookmark, open(path + bookmark_pickle_file, "wb"))
     return None
 
@@ -92,6 +100,10 @@ def create_daily_count(db, collection, tc, path_file):
 
 
 def send_mail(subject, count, start, end):
+    """
+    Sends mail with how long the script ran and how many records were stored
+    in the mongo db
+    """
     text = ("Number of records downloaded: %d. " +
             "Script ran from %s till %s.") % (count,
                                               str(start),
