@@ -100,7 +100,7 @@ def store_four_reviews_in_mongo(db, collection, reviews, tc, venue_id):
 
 
 def main():
-    start = dt.datetime.now()
+
     number_of_requests = 0
     """
     After validating your account with Foursquare the max number of requests
@@ -109,7 +109,13 @@ def main():
     run every 2 hours (buffer).  I am setting the max to 4,000 since I like to
     have some buffer in case I need to test something.
     """
-    max_number_of_requests = 4000
+
+    environment = dl.dev_test_prod()
+    if environment == 'prod':
+        max_number_of_requests = 4000
+    else:
+        max_number_of_requests = 10
+        print "Only testing"
     path = dl.get_path('FourSquare')
 
     bookmark_pickle_file = "bookmark_four.p"
@@ -162,21 +168,19 @@ def main():
 
     pickle.dump(bookmark, open(path + bookmark_pickle_file, "wb"))
 
-    dc_file = 'FourCountPerDay.csv'
-    four_places_count = dl.create_daily_count(db,
-                                              'SeattleFour',
-                                              tc,
-                                              path + dc_file)
-    four_reviews_count = dl.create_daily_count(db,
-                                               'SeattleFourReviews',
-                                               tc,
-                                               path + dc_file)
-    end = dt.datetime.now()
-
-    dl.send_mail('FourSquareToMongo', four_places_count, start, end)
-    dl.send_mail('FourSquareReviewsToMongo', four_reviews_count, start, end)
+    dc_places_file = 'FourCountPerDay.csv'
+    dc_reviews_file = 'FourReviewsCountPerDay.csv'
+    dl.create_daily_count(db,
+                          'SeattleFour',
+                          tc,
+                          path + dc_places_file)
+    dl.create_daily_count(db,
+                          'SeattleFourReviews',
+                          tc,
+                          path + dc_reviews_file)
 
 # %% Standard boilerplate to call the main() function
+
 
 if __name__ == "__main__":
     main()
