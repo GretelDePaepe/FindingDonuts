@@ -1,3 +1,0 @@
-S'fomojomo'
-p0
-.
