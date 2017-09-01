@@ -116,3 +116,20 @@ def send_mail(subject, count, start, end):
     server.sendmail("findingdonuts@gmail.com",
                     "gretel.paepe@gmail.com",
                     message)
+
+
+def send_mail_general(subject, body, path):
+    """
+    Sends mail with subject and body provided
+    Loads a mailbox password from a pickled file stored in path
+    """
+    mail_password_file = "MailPassword.p"
+    mail_password = pickle.load(open(path + mail_password_file, "rb"))
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login("findingdonuts@gmail.com", mail_password)
+    message = 'Subject: {}\n\n{}'.format(subject, body)
+    server.sendmail("findingdonuts@gmail.com",
+                    "gretel.paepe@gmail.com",
+                    message)
