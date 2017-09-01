@@ -8,6 +8,7 @@ Created on Thu Aug 10 16:46:35 2017
 
 import pickle
 import sys
+import socket
 from pymongo import MongoClient
 import smtplib
 
@@ -28,6 +29,21 @@ def get_path(sub):
     else:
         path = '/home/ec2-user/pythonscripts/'
     return path
+
+
+def dev_test_prod():
+    """
+    Checks which host the python script is running on to determine whether it
+    is running in the dev, test or prod environment.
+    """
+    host = socket.gethostname()
+    if host == 'Gretels-MacBook-Air.local':
+        environment = 'dev'
+    elif host == 'ip-172-31-1-235':
+        environment = 'test'
+    elif host == 'ip-172-31-21-249':
+        environment = 'prod'
+    return environment
 
 
 def get_api_keys(pickle_file, path):
