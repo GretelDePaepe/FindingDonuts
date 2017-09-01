@@ -12,23 +12,6 @@ import urllib2
 import string
 import pickle
 import DonutLibrary as dl
-import smtplib
-
-# %% Define function to mail results
-
-
-def send_mail(subject, body):
-    """
-    Sends mail with the new words
-    """
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login("findingdonuts@gmail.com", "fomojomo")
-    message = 'Subject: {}\n\n{}'.format(subject, body)
-    server.sendmail("findingdonuts@gmail.com",
-                    "gretel.paepe@gmail.com",
-                    message)
 
 # %% Load words already pickled
 
@@ -66,4 +49,4 @@ if len(new_words) > 0:
     body = ', '.join(new_words)
 else:
     body = 'No new words'
-send_mail(subject, body)
+dl.send_mail_general(subject, body, path)
