@@ -170,14 +170,17 @@ def main():
 
     dc_places_file = 'FourCountPerDay.csv'
     dc_reviews_file = 'FourReviewsCountPerDay.csv'
-    dl.create_daily_count(db,
-                          'SeattleFour',
-                          tc,
-                          path + dc_places_file)
-    dl.create_daily_count(db,
-                          'SeattleFourReviews',
-                          tc,
-                          path + dc_reviews_file)
+    four_count_per_day = dl.create_daily_count(db,
+                                               'SeattleFour',
+                                               tc,
+                                               path + dc_places_file)
+    four_reviews_count_per_day = dl.create_daily_count(db,
+                                                       'SeattleFourReviews',
+                                                       tc,
+                                                       path + dc_reviews_file)
+    if environment != 'prod':
+        print "Number of places", four_count_per_day
+        print "Number of reviews", four_reviews_count_per_day
 
 # %% Standard boilerplate to call the main() function
 
