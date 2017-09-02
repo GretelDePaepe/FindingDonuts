@@ -115,6 +115,25 @@ def create_daily_count(db, collection, tc, path_file):
     return count
 
 
+def create_daily_count_start_end(db, collection, tc, start, end, path_file):
+    """
+    Connect to a mongo database and counts the docs in a collection
+    with a specific date tag and stores the date and count in a csv file.
+    db = mongo database connection
+    collection = name of the mongo collection
+    tc = today's date
+    start = the date and time the script started running
+    end = the date and time the script ended
+    path_file = path and the file to save to
+    """
+    con = "db.%s.find({'date': '%s'}).count()" % (collection, tc)
+    count = eval(con)
+    f = open(path_file, 'a')
+    f.write(tc + "," + start + "," + end + "," + str(count) + "\n")
+    f.close()
+    return count
+
+
 def send_mail(subject, count, start, end):
     """
     Sends mail with how long the script ran and how many records were stored

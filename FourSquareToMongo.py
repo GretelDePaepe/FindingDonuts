@@ -101,6 +101,7 @@ def store_four_reviews_in_mongo(db, collection, reviews, tc, venue_id):
 
 def main():
 
+    start = dt.datetime.now().strftime('%H:%M')
     number_of_requests = 0
     """
     After validating your account with Foursquare the max number of requests
@@ -116,7 +117,7 @@ def main():
     else:
         max_number_of_requests = 10
         print "Only testing"
-    path = dl.get_path('FourSquare')
+    path = dl.get_path('FindingDonuts')
 
     bookmark_pickle_file = "bookmark_four.p"
     bookmark = dl.get_bookmark(bookmark_pickle_file, path)
@@ -168,19 +169,26 @@ def main():
 
     pickle.dump(bookmark, open(path + bookmark_pickle_file, "wb"))
 
+    end = dt.datetime.now().strftime('%H:%M')
+
     dc_places_file = 'FourCountPerDay.csv'
     dc_reviews_file = 'FourReviewsCountPerDay.csv'
-    four_count_per_day = dl.create_daily_count(db,
-                                               'SeattleFour',
-                                               tc,
-                                               path + dc_places_file)
-    four_reviews_count_per_day = dl.create_daily_count(db,
-                                                       'SeattleFourReviews',
-                                                       tc,
-                                                       path + dc_reviews_file)
+    four_count = dl.create_daily_count_start_end(db,
+                                                 'SeattleFour',
+                                                 tc,
+                                                 start,
+                                                 end,
+                                                 path+dc_places_file)
+
+    four_reviews_count = dl.create_daily_count_start_end(db,
+                                                         'SeattleFourReviews',
+                                                         tc,
+                                                         start,
+                                                         end,
+                                                         path+dc_reviews_file)
     if environment != 'prod':
-        print "Number of places", four_count_per_day
-        print "Number of reviews", four_reviews_count_per_day
+        print "Number of places", four_count
+        print "Number of reviews", four_reviews_count
 
 # %% Standard boilerplate to call the main() function
 

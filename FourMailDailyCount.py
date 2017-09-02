@@ -16,10 +16,10 @@ import DonutLibrary as dl
 path = dl.get_path('FindingDonuts')
 
 cpd = pd.read_csv(path + 'FourCountPerDay.csv',
-                  header=None, names=['Date', 'Count'])
+                  header=None, names=['Date', 'Start', 'End', 'Count'])
 
 reviews_cpd = pd.read_csv(path + 'FourReviewsCountPerDay.csv',
-                          header=None, names=['Date', 'Count'])
+                          header=None, names=['Date', 'Start', 'End', 'Count'])
 
 start = dt.datetime.now()
 tc = start.strftime('%m/%d/%Y')
@@ -33,7 +33,7 @@ subject = "Foursquare to Mongo"
 body = ("Number of places downloaded: " +
         "\n" +
         "%s" +
-        "\n" +
+        "\n\n\n" +
         "Number of reviews downloaded:  " +
         "\n" +
         "%s") % (count_today,
