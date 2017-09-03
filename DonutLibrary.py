@@ -52,8 +52,7 @@ def get_api_keys(pickle_file, path):
     pickle_file = name of the pickled file which contains the client api key
     path : location of the pickled file
     """
-    api_key_pickle = "FourAPIKey.p"
-    api_key = pickle.load(open(path+api_key_pickle, "rb"))
+    api_key = pickle.load(open(path+pickle_file, "rb"))
     return api_key
 
 
