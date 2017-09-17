@@ -121,7 +121,6 @@ def main():
 
     bookmark_pickle_file = "bookmark_four.p"
     bookmark = dl.get_bookmark(bookmark_pickle_file, path)
-    bookmark = 8562
 
     db = dl.connect_mongo('FindingDonuts')
 
@@ -142,7 +141,6 @@ def main():
 
     while number_of_requests < max_number_of_requests:
         hood, lat, lon = seattle_coordinates[bookmark]
-        print hood, lat, lon
         for one_type in types:
             four_data = four_places(lat, lon, radius,
                                     one_type, limit,
