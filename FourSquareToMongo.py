@@ -70,7 +70,7 @@ def store_four_in_mongo(db, collection, four_data, tc, hood):
         doc['hood'] = hood
         venue = doc['venue']['id']
         venues_list.append(venue)
-        con = "db.%s.find({'venue_id': '%s', 'date': '%s'}).count()" % (collection, venue, tc)
+        con = "db.%s.find({'venue.id': '%s', 'date': '%s'}).count()" % (collection, venue, tc)
         count = eval(con)
         if count == 0:
             eval("db.%s.insert_one(doc)" % collection)
@@ -121,7 +121,6 @@ def main():
 
     bookmark_pickle_file = "bookmark_four.p"
     bookmark = dl.get_bookmark(bookmark_pickle_file, path)
-    bookmark = 8562
 
     db = dl.connect_mongo('FindingDonuts')
 
@@ -142,7 +141,6 @@ def main():
 
     while number_of_requests < max_number_of_requests:
         hood, lat, lon = seattle_coordinates[bookmark]
-        print hood, lat, lon
         for one_type in types:
             four_data = four_places(lat, lon, radius,
                                     one_type, limit,
