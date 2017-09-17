@@ -70,7 +70,7 @@ def store_four_in_mongo(db, collection, four_data, tc, hood):
         doc['hood'] = hood
         venue = doc['venue']['id']
         venues_list.append(venue)
-        con = "db.%s.find({'venue_id': '%s', 'date': '%s'}).count()" % (collection, venue, tc)
+        con = "db.%s.find({'venue.id': '%s', 'date': '%s'}).count()" % (collection, venue, tc)
         count = eval(con)
         if count == 0:
             eval("db.%s.insert_one(doc)" % collection)
