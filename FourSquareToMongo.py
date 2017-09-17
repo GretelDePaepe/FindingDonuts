@@ -126,9 +126,7 @@ def main():
     db = dl.connect_mongo('FindingDonuts')
 
     client_id = dl.get_api_keys('FourAPIKey.p', path)[0]
-    print client_id
     client_secret = dl.get_api_keys('FourAPIKey.p', path)[1]
-    print client_secret
 
     radius = 100
     limit = 50
