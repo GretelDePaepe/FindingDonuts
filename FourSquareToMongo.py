@@ -27,7 +27,7 @@ def four_places(lat, lon, radius, category, limit, client_id, client_secret):
     client_id = Client_id linked to app.
     client_secret = Client_secret linked to app.
     """
-    ll = str(lat) + "," + str(lon)
+    ll = "%.3f,%.3f" % (lat, lon)
     client = foursquare.Foursquare(client_id=client_id,
                                    client_secret=client_secret)
     response = client.venues.explore(params={'ll': ll,
@@ -121,11 +121,14 @@ def main():
 
     bookmark_pickle_file = "bookmark_four.p"
     bookmark = dl.get_bookmark(bookmark_pickle_file, path)
+    bookmark = 8562
 
     db = dl.connect_mongo('FindingDonuts')
 
     client_id = dl.get_api_keys('FourAPIKey.p', path)[0]
+    print client_id
     client_secret = dl.get_api_keys('FourAPIKey.p', path)[1]
+    print client_secret
 
     radius = 100
     limit = 50
@@ -141,6 +144,7 @@ def main():
 
     while number_of_requests < max_number_of_requests:
         hood, lat, lon = seattle_coordinates[bookmark]
+        print hood, lat, lon
         for one_type in types:
             four_data = four_places(lat, lon, radius,
                                     one_type, limit,
